@@ -1,0 +1,25 @@
+{
+  "name": "deepseek-anthropic-proxy",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Local Anthropic-compatible proxy for Claude Desktop to use DeepSeek.",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test",
+    "test:coverage": "node --test --experimental-test-coverage",
+    "build:macos:app": "zsh scripts/build-macos-app.sh",
+    "package:macos:signed": "zsh scripts/package-macos-signed.sh",
+    "verify:macos:package": "zsh scripts/verify-macos-package.sh"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "deepseek",
+    "anthropic",
+    "claude-desktop",
+    "proxy"
+  ],
+  "license": "MIT"
+}

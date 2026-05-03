@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.example.deepseek-anthropic-proxy</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>__NODE_PATH__</string>
+    <string>__PROJECT_DIR__/src/server.js</string>
+  </array>
+
+  <key>WorkingDirectory</key>
+  <string>__PROJECT_DIR__</string>
+
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>HOST</key>
+    <string>127.0.0.1</string>
+    <key>PORT</key>
+    <string>8787</string>
+    <key>DEEPSEEK_MODELS</key>
+    <string>deepseek-v4-pro,deepseek-v4-flash</string>
+    <key>DEEPSEEK_ANTHROPIC_BASE_URL</key>
+    <string>https://api.deepseek.com/anthropic</string>
+    <key>NODE_ENV</key>
+    <string>production</string>
+  </dict>
+
+  <key>RunAtLoad</key>
+  <true/>
+
+  <key>KeepAlive</key>
+  <true/>
+
+  <key>StandardOutPath</key>
+  <string>/tmp/deepseek-anthropic-proxy.out.log</string>
+
+  <key>StandardErrorPath</key>
+  <string>/tmp/deepseek-anthropic-proxy.err.log</string>
+</dict>
+</plist>

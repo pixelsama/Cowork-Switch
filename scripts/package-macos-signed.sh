@@ -136,6 +136,7 @@ create_dmg() {
   rm -rf "$DMG_STAGE_DIR"
   mkdir -p "$DMG_STAGE_DIR"
   cp -R "$APP_STAGE_DIR" "$DMG_STAGE_DIR/$APP_BUNDLE_NAME"
+  ln -s /Applications "$DMG_STAGE_DIR/Applications"
   rm -f "$final_dmg_path"
   hdiutil create \
     -volname "$APP_NAME" \

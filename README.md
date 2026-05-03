@@ -91,6 +91,7 @@ Build signed release artifacts:
 
 ```bash
 cd /Users/pixelsama/deepseek-anthropic-proxy
+brew install create-dmg
 npm run package:macos:signed
 ```
 
@@ -119,6 +120,7 @@ release/checksums-macos.txt
 Notes:
 
 - If `CSC_NAME` is omitted and there is only one `Developer ID Application` certificate installed, the script auto-detects it.
+- The DMG installer UI is generated with `create-dmg`, which adds the background, icon layout, and `Applications` drop target.
 - If Apple notarization fails with `403 A required agreement is missing or has expired`, the Apple Developer account needs updated legal agreements before notarization will succeed.
 
 The app shows:

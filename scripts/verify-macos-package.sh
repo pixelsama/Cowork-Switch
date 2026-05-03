@@ -40,7 +40,7 @@ check_spctl_status() {
 rm -rf "$TMP_DIR"
 mkdir -p "$TMP_DIR/zip" "$TMP_DIR/dmg"
 
-unzip -q "$latest_zip" -d "$TMP_DIR/zip"
+ditto -x -k "$latest_zip" "$TMP_DIR/zip"
 codesign -dvv "$TMP_DIR/zip/ClaudeGatewayTray.app"
 check_spctl_status "$TMP_DIR/zip/ClaudeGatewayTray.app"
 

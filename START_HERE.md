@@ -65,6 +65,7 @@ Signed package:
 
 ```bash
 cd /Users/pixelsama/deepseek-anthropic-proxy
+brew install create-dmg
 npm run package:macos:signed
 ```
 
@@ -76,6 +77,8 @@ SKIP_NOTARIZATION=1 npm run package:macos:signed
 ```
 
 If Apple notarization returns `403` about missing or expired agreements, fix the Apple Developer agreements first and rerun the package command.
+
+The DMG installer UI is generated with `create-dmg`, so the released disk image opens with a background, app icon placement, and an `Applications` drag target.
 
 The menu bar app lets you:
 

@@ -5,12 +5,15 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 APP_NAME="ClaudeGatewayTray"
 APP_BUNDLE_NAME="${APP_NAME}.app"
+DMG_VOLUME_NAME="Install Claude Gateway"
 APP_BUILD_DIR="$ROOT_DIR/dist/$APP_BUNDLE_NAME"
 RELEASE_DIR="$ROOT_DIR/release"
 TMP_DIR="$ROOT_DIR/.tmp/package-macos"
 STAGE_DIR="$TMP_DIR/stage"
 APP_STAGE_DIR="$STAGE_DIR/$APP_BUNDLE_NAME"
 DMG_STAGE_DIR="$TMP_DIR/dmg-root"
+DMG_BACKGROUND_DIR="$DMG_STAGE_DIR/.background"
+DMG_BACKGROUND_PATH="$DMG_BACKGROUND_DIR/dmg-background.png"
 KEYCHAIN_PROFILE="${APPLE_KEYCHAIN_PROFILE:-otakuclaw-notary}"
 ZIP_SUBMISSION_PATH="$TMP_DIR/${APP_NAME}-for-notary.zip"
 SKIP_NOTARIZATION="${SKIP_NOTARIZATION:-0}"
@@ -134,16 +137,25 @@ create_final_zip() {
 
 create_dmg() {
   rm -rf "$DMG_STAGE_DIR"
-  mkdir -p "$DMG_STAGE_DIR"
+  mkdir -p "$DMG_STAGE_DIR" "$DMG_BACKGROUND_DIR"
   cp -R "$APP_STAGE_DIR" "$DMG_STAGE_DIR/$APP_BUNDLE_NAME"
-  ln -s /Applications "$DMG_STAGE_DIR/Applications"
+  swift "$ROOT_DIR/scripts/render-dmg-background.swift" "$DMG_BACKGROUND_PATH"
+  chflags hidden "$DMG_BACKGROUND_DIR" || true
   rm -f "$final_dmg_path"
-  hdiutil create \
-    -volname "$APP_NAME" \
-    -srcfolder "$DMG_STAGE_DIR" \
-    -ov \
-    -format UDZO \
-    "$final_dmg_path" >/dev/null
+  create-dmg \
+    --volname "$DMG_VOLUME_NAME" \
+    --background "$DMG_BACKGROUND_PATH" \
+    --window-pos 200 140 \
+    --window-size 720 420 \
+    --icon-size 128 \
+    --text-size 14 \
+    --icon "$APP_BUNDLE_NAME" 180 240 \
+    --hide-extension "$APP_BUNDLE_NAME" \
+    --app-drop-link 540 240 \
+    --codesign "$full_identity" \
+    --hdiutil-quiet \
+    "$final_dmg_path" \
+    "$DMG_STAGE_DIR"
 }
 
 verify_signed_app() {
@@ -175,9 +187,10 @@ write_checksums() {
 require_command security
 require_command codesign
 require_command xcrun
+require_command create-dmg
 require_command ditto
-require_command hdiutil
 require_command shasum
+require_command swift
 
 mkdir -p "$RELEASE_DIR"
 rm -rf "$TMP_DIR"

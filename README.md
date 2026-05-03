@@ -15,10 +15,10 @@ Local Anthropic-compatible gateway for Claude Desktop, now with a macOS menu bar
 
 ## Runtime Pieces
 
-- Node gateway source: [src](/Users/pixelsama/deepseek-anthropic-proxy/src)
-- Menu bar app source: [macos-app/CoworkSwitch](/Users/pixelsama/deepseek-anthropic-proxy/macos-app/CoworkSwitch)
-- Built app bundle: [dist/CoworkSwitch.app](/Users/pixelsama/deepseek-anthropic-proxy/dist/CoworkSwitch.app)
-- Config file: `/Users/pixelsama/Library/Application Support/CoworkSwitch/config.json`
+- Node gateway source: [src](src)
+- Menu bar app source: [macos-app/CoworkSwitch](macos-app/CoworkSwitch)
+- Built app bundle: [dist/CoworkSwitch.app](dist/CoworkSwitch.app)
+- Config file: `~/Library/Application Support/CoworkSwitch/config.json`
 
 ## Claude Desktop
 
@@ -41,7 +41,7 @@ For each provider you can configure:
 - `useFakeModels`
 - `fakeModels`
 
-If `useFakeModels = true`, the gateway returns your local fake `/v1/models` list.
+If `useFakeModels = true`, the gateway returns your local fake `/v1/models` list, even when the list is empty.
 
 If `useFakeModels = false`, the gateway forwards `/v1/models` directly to the upstream provider.
 
@@ -50,7 +50,7 @@ If `useFakeModels = false`, the gateway forwards `/v1/models` directly to the up
 The gateway is installed as:
 
 ```text
-/Users/pixelsama/Library/LaunchAgents/com.pixelsama.cowork-switch.plist
+~/Library/LaunchAgents/com.pixelsama.cowork-switch.plist
 ```
 
 Useful commands:
@@ -66,7 +66,7 @@ tail -f /tmp/cowork-switch.out.log /tmp/cowork-switch.err.log
 ## Build The Menu Bar App
 
 ```bash
-cd /Users/pixelsama/deepseek-anthropic-proxy
+cd /path/to/Cowork-Switch
 zsh scripts/build-macos-app.sh
 open dist/CoworkSwitch.app
 ```
@@ -90,7 +90,7 @@ otakuclaw-notary
 Build signed release artifacts:
 
 ```bash
-cd /Users/pixelsama/deepseek-anthropic-proxy
+cd /path/to/Cowork-Switch
 brew install create-dmg
 npm run package:macos:signed
 ```
@@ -98,14 +98,14 @@ npm run package:macos:signed
 Dry run without notarization:
 
 ```bash
-cd /Users/pixelsama/deepseek-anthropic-proxy
+cd /path/to/Cowork-Switch
 SKIP_NOTARIZATION=1 npm run package:macos:signed
 ```
 
 Verify the packaged artifacts:
 
 ```bash
-cd /Users/pixelsama/deepseek-anthropic-proxy
+cd /path/to/Cowork-Switch
 npm run verify:macos:package
 ```
 

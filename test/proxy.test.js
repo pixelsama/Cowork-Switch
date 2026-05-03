@@ -9,6 +9,7 @@ import {
   createAnthropicProxyServer,
   createModelList,
   parseModelIds,
+  REDACTED_API_KEY,
 } from '../src/proxy.js';
 import {
   createDefaultGatewayConfig,
@@ -210,6 +211,75 @@ test('GET /v1/models/:id returns one configured model', async () => {
       display_name: 'deepseek-v4-pro',
     });
   });
+});
+
+test('GET /v1/models returns an empty fake list without forwarding upstream', async () => {
+  const fetchImpl = async () => {
+    assert.fail('Fake models should not forward to upstream when useFakeModels is true.');
+  };
+
+  await withServer(
+    {
+      fetchImpl,
+      configStore: createConfigStore({
+        providers: [
+          {
+            id: 'empty-fake',
+            name: 'Empty Fake Models',
+            baseUrl: 'https://gateway.example/anthropic',
+            apiKey: '',
+            useFakeModels: true,
+            fakeModels: [],
+          },
+        ],
+        activeProviderId: 'empty-fake',
+      }),
+    },
+    async (baseUrl) => {
+      const response = await fetch(`${baseUrl}/v1/models`);
+      const body = await response.json();
+
+      assert.equal(response.status, 200);
+      assert.deepEqual(body, {
+        data: [],
+        first_id: null,
+        has_more: false,
+        last_id: null,
+      });
+    },
+  );
+});
+
+test('GET /v1/models/:id returns 404 for empty fake models without forwarding upstream', async () => {
+  const fetchImpl = async () => {
+    assert.fail('Fake model lookups should not forward to upstream when useFakeModels is true.');
+  };
+
+  await withServer(
+    {
+      fetchImpl,
+      configStore: createConfigStore({
+        providers: [
+          {
+            id: 'empty-fake',
+            name: 'Empty Fake Models',
+            baseUrl: 'https://gateway.example/anthropic',
+            apiKey: '',
+            useFakeModels: true,
+            fakeModels: [],
+          },
+        ],
+        activeProviderId: 'empty-fake',
+      }),
+    },
+    async (baseUrl) => {
+      const response = await fetch(`${baseUrl}/v1/models/missing-model`);
+      const body = await response.json();
+
+      assert.equal(response.status, 404);
+      assert.equal(body.error.type, 'not_found_error');
+    },
+  );
 });
 
 test('GET /v1/models forwards upstream when fake models are disabled', async () => {
@@ -458,17 +528,94 @@ test('admin config endpoint updates the active provider configuration', async ()
     assert.equal(response.status, 200);
     assert.equal(body.activeProviderId, 'custom');
     assert.equal(body.providers[0].baseUrl, 'https://gateway.example/anthropic');
+    assert.equal(body.providers[0].apiKey, REDACTED_API_KEY);
+    assert.equal(configStore.getConfig().providers[0].apiKey, 'new-key');
+  });
+});
+
+test('admin config endpoint redacts and preserves stored API keys', async () => {
+  const configStore = createConfigStore({
+    providers: [
+      {
+        id: 'deepseek',
+        name: 'DeepSeek',
+        baseUrl: 'https://api.deepseek.com/anthropic',
+        apiKey: 'stored-key',
+        useFakeModels: true,
+        fakeModels: ['deepseek-v4-pro'],
+      },
+    ],
+  });
+
+  await withServer({ configStore }, async (baseUrl) => {
+    const configResponse = await fetch(`${baseUrl}/_admin/config`);
+    const config = await configResponse.json();
+
+    assert.equal(config.providers[0].apiKey, REDACTED_API_KEY);
+    assert.equal(config.providers[0].apiKeyConfigured, true);
+
+    const saveResponse = await fetch(`${baseUrl}/_admin/config`, {
+      method: 'PUT',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        ...config,
+        providers: [
+          {
+            ...config.providers[0],
+            name: 'Updated DeepSeek',
+          },
+        ],
+      }),
+    });
+    const saved = await saveResponse.json();
+
+    assert.equal(saveResponse.status, 200);
+    assert.equal(saved.providers[0].apiKey, REDACTED_API_KEY);
+    assert.equal(saved.providers[0].name, 'Updated DeepSeek');
+    assert.equal(configStore.getConfig().providers[0].apiKey, 'stored-key');
   });
 });
 
 test('admin status endpoint reports the current provider', async () => {
+  await withServer(
+    {
+      configStore: createConfigStore({
+        providers: [
+          {
+            id: 'deepseek',
+            name: 'DeepSeek',
+            baseUrl: 'https://api.deepseek.com/anthropic',
+            apiKey: 'stored-key',
+            useFakeModels: true,
+            fakeModels: ['deepseek-v4-pro'],
+          },
+        ],
+      }),
+    },
+    async (baseUrl) => {
+      const response = await fetch(`${baseUrl}/_admin/status`);
+      const body = await response.json();
+
+      assert.equal(response.status, 200);
+      assert.equal(body.activeProvider.id, 'deepseek');
+      assert.equal(body.activeProvider.apiKey, REDACTED_API_KEY);
+      assert.equal(body.activeProvider.apiKeyConfigured, true);
+      assert.equal(body.activeProvider.useFakeModels, true);
+    },
+  );
+});
+
+test('admin config endpoint returns 400 for invalid JSON', async () => {
   await withServer({ configStore: createConfigStore() }, async (baseUrl) => {
-    const response = await fetch(`${baseUrl}/_admin/status`);
+    const response = await fetch(`${baseUrl}/_admin/config`, {
+      method: 'PUT',
+      headers: { 'content-type': 'application/json' },
+      body: '{ invalid json',
+    });
     const body = await response.json();
 
-    assert.equal(response.status, 200);
-    assert.equal(body.activeProvider.id, 'deepseek');
-    assert.equal(body.activeProvider.useFakeModels, true);
+    assert.equal(response.status, 400);
+    assert.equal(body.error.type, 'invalid_request_error');
   });
 });
 

@@ -12,7 +12,7 @@ Requires Node.js 18+.
 Run once manually:
 
 ```bash
-cd /Users/pixelsama/deepseek-anthropic-proxy
+cd /path/to/Cowork-Switch
 node src/server.js
 ```
 
@@ -52,7 +52,7 @@ launchctl kickstart -k gui/$(id -u)/com.pixelsama.cowork-switch
 ## 3. Build And Open The Menu Bar App
 
 ```bash
-cd /Users/pixelsama/deepseek-anthropic-proxy
+cd /path/to/Cowork-Switch
 zsh scripts/build-macos-app.sh
 open dist/CoworkSwitch.app
 ```
@@ -64,7 +64,7 @@ This project supports the same signing/notarization variable names used by `Free
 Signed package:
 
 ```bash
-cd /Users/pixelsama/deepseek-anthropic-proxy
+cd /path/to/Cowork-Switch
 brew install create-dmg
 npm run package:macos:signed
 ```
@@ -72,7 +72,7 @@ npm run package:macos:signed
 Offline dry run:
 
 ```bash
-cd /Users/pixelsama/deepseek-anthropic-proxy
+cd /path/to/Cowork-Switch
 SKIP_NOTARIZATION=1 npm run package:macos:signed
 ```
 

@@ -13,6 +13,7 @@ final class MenuBarModel: ObservableObject {
 
     private let client = GatewayClient()
     private var refreshTimer: Timer?
+    private var hasLoadedConfig = false
 
     init() {
         startPolling()
@@ -64,8 +65,8 @@ final class MenuBarModel: ObservableObject {
 
     func refreshAll() async {
         launchAtLogin.refreshStatus()
-        await refreshStatus()
         await loadConfig()
+        await refreshStatus()
     }
 
     func refreshStatus() async {
@@ -73,7 +74,7 @@ final class MenuBarModel: ObservableObject {
         defer { isRefreshing = false }
 
         do {
-            let status = try await client.fetchStatus()
+            let status = try await client.fetchStatus(config: loadedConfig)
             self.status = status
             self.lastErrorMessage = ""
         } catch {
@@ -84,8 +85,9 @@ final class MenuBarModel: ObservableObject {
 
     func loadConfig() async {
         do {
-            let config = try await client.fetchConfig()
+            let config = try await client.fetchConfig(config: loadedConfig)
             self.draftConfig = config
+            self.hasLoadedConfig = true
             self.lastErrorMessage = ""
         } catch {
             self.lastErrorMessage = error.localizedDescription
@@ -99,6 +101,7 @@ final class MenuBarModel: ObservableObject {
         do {
             let saved = try await client.saveConfig(draftConfig)
             draftConfig = saved
+            hasLoadedConfig = true
             lastErrorMessage = ""
             await refreshStatus()
         } catch {
@@ -167,6 +170,10 @@ final class MenuBarModel: ObservableObject {
         var provider = draftConfig.providers[index]
         mutate(&provider)
         draftConfig.providers[index] = provider
+    }
+
+    private var loadedConfig: GatewayConfig? {
+        hasLoadedConfig ? draftConfig : nil
     }
 
     private func startPolling() {

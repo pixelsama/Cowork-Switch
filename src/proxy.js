@@ -8,6 +8,8 @@ import {
 
 export { DEFAULT_MODELS, DEFAULT_UPSTREAM_BASE_URL, parseModelIds } from './config.js';
 
+export const REDACTED_API_KEY = '__REDACTED_API_KEY__';
+
 const HOP_BY_HOP_HEADERS = new Set([
   'connection',
   'content-length',
@@ -65,6 +67,14 @@ function readRequestBody(request) {
     request.on('end', () => resolve(Buffer.concat(chunks)));
     request.on('error', reject);
   });
+}
+
+function isLoopbackAddress(address) {
+  return address === '::1' || /^127\./.test(address ?? '') || /^::ffff:127\./i.test(address ?? '');
+}
+
+function isLocalAdminRequest(request) {
+  return isLoopbackAddress(request.socket.remoteAddress);
 }
 
 function normalizeHeaderValue(value) {
@@ -142,14 +152,43 @@ async function readJsonBody(request) {
   return JSON.parse(body.toString('utf8'));
 }
 
+function createRedactedApiKey(apiKey) {
+  return apiKey ? REDACTED_API_KEY : '';
+}
+
 function createPublicProviderView(provider) {
   return {
     id: provider.id,
     name: provider.name,
     baseUrl: provider.baseUrl,
-    apiKey: provider.apiKey,
+    apiKey: createRedactedApiKey(provider.apiKey),
+    apiKeyConfigured: Boolean(provider.apiKey),
     useFakeModels: provider.useFakeModels,
     fakeModels: [...provider.fakeModels],
+  };
+}
+
+function mergeStoredApiKeys(nextConfig, currentConfig) {
+  if (!nextConfig || typeof nextConfig !== 'object' || !Array.isArray(nextConfig.providers)) {
+    return nextConfig;
+  }
+
+  const currentProvidersById = new Map(currentConfig.providers.map((provider) => [provider.id, provider]));
+
+  return {
+    ...nextConfig,
+    providers: nextConfig.providers.map((provider, index) => {
+      if (!provider || typeof provider !== 'object' || provider.apiKey !== REDACTED_API_KEY) {
+        return provider;
+      }
+
+      const currentProvider = currentProvidersById.get(provider.id) ?? currentConfig.providers[index];
+
+      return {
+        ...provider,
+        apiKey: currentProvider?.apiKey ?? '',
+      };
+    }),
   };
 }
 
@@ -208,6 +247,11 @@ export function createAnthropicProxyServer(options = {}) {
       const config = configStore.getConfig();
       const activeProvider = getActiveProvider(config);
 
+      if (requestUrl.pathname.startsWith('/_admin/') && !isLocalAdminRequest(request)) {
+        sendError(response, 403, 'forbidden_error', 'Admin endpoints are only available from loopback addresses.');
+        return;
+      }
+
       if (request.method === 'GET' && requestUrl.pathname === '/') {
         sendJson(response, 200, createStatusPayload(config, configStore));
         return;
@@ -229,14 +273,26 @@ export function createAnthropicProxyServer(options = {}) {
       }
 
       if (request.method === 'PUT' && requestUrl.pathname === '/_admin/config') {
-        const nextConfig = await readJsonBody(request);
-        const savedConfig = configStore.setConfig(nextConfig);
+        let nextConfig;
+
+        try {
+          nextConfig = await readJsonBody(request);
+        } catch (error) {
+          if (error instanceof SyntaxError) {
+            sendError(response, 400, 'invalid_request_error', 'Invalid JSON request body.');
+            return;
+          }
+
+          throw error;
+        }
+
+        const savedConfig = configStore.setConfig(mergeStoredApiKeys(nextConfig, config));
         sendJson(response, 200, createConfigPayload(savedConfig));
         return;
       }
 
       if (request.method === 'GET' && requestUrl.pathname === '/v1/models') {
-        if (activeProvider.useFakeModels && activeProvider.fakeModels.length > 0) {
+        if (activeProvider.useFakeModels) {
           sendJson(response, 200, createModelList(activeProvider.fakeModels));
           return;
         }
@@ -250,7 +306,7 @@ export function createAnthropicProxyServer(options = {}) {
       }
 
       if (request.method === 'GET' && requestUrl.pathname.startsWith('/v1/models/')) {
-        if (activeProvider.useFakeModels && activeProvider.fakeModels.length > 0) {
+        if (activeProvider.useFakeModels) {
           const modelId = decodeURIComponent(requestUrl.pathname.slice('/v1/models/'.length));
           const model = activeProvider.fakeModels.find((candidate) => candidate === modelId);
 

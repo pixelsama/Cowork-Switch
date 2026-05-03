@@ -8,11 +8,7 @@ struct CoworkSwitchApp: App {
         MenuBarExtra {
             MenuBarView(model: model)
         } label: {
-            if let icon = NSImage(named: "AppIcon") {
-                Image(nsImage: icon)
-            } else {
-                Image(systemName: model.statusSymbolName)
-            }
+            menuBarIcon
         }
         .menuBarExtraStyle(.window)
 
@@ -20,5 +16,30 @@ struct CoworkSwitchApp: App {
             SettingsView(model: model)
         }
         .defaultSize(width: 620, height: 520)
+    }
+
+    @ViewBuilder
+    private var menuBarIcon: some View {
+        if let icon = resizedMenuBarIcon() {
+            Image(nsImage: icon)
+        } else {
+            Image(systemName: model.statusSymbolName)
+        }
+    }
+
+    private func resizedMenuBarIcon() -> NSImage? {
+        guard let source = NSImage(named: "AppIcon") else {
+            return nil
+        }
+
+        let targetSize = NSSize(width: 18, height: 18)
+
+        guard let resized = source.copy() as? NSImage else {
+            return nil
+        }
+
+        resized.size = targetSize
+        resized.isTemplate = false
+        return resized
     }
 }

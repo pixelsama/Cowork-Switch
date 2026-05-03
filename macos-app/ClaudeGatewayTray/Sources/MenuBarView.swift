@@ -1,3 +1,4 @@
+import AppKit
 import SwiftUI
 
 struct MenuBarView: View {
@@ -65,7 +66,7 @@ struct MenuBarView: View {
                 .disabled(model.isRefreshing)
 
                 Button(L10n.tr("menu.settings")) {
-                    openWindow(id: "settings")
+                    showSettingsWindow()
                 }
             }
 
@@ -77,5 +78,26 @@ struct MenuBarView: View {
         }
         .padding(16)
         .frame(width: 360)
+    }
+
+    private func showSettingsWindow() {
+        openWindow(id: "settings")
+        focusSettingsWindow()
+    }
+
+    private func focusSettingsWindow(attempt: Int = 0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+            NSApp.activate(ignoringOtherApps: true)
+
+            if let window = NSApp.windows.first(where: { $0.title == L10n.tr("settings.window_title") }) {
+                window.makeKeyAndOrderFront(nil)
+                window.orderFrontRegardless()
+                return
+            }
+
+            if attempt < 3 {
+                focusSettingsWindow(attempt: attempt + 1)
+            }
+        }
     }
 }

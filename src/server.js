@@ -17,7 +17,7 @@ server.listen(config.port, config.host, () => {
   const currentConfig = configStore.getConfig();
   const currentProvider = getActiveProvider(currentConfig);
 
-  console.log(`Claude Anthropic gateway listening on http://${currentConfig.host}:${currentConfig.port}`);
+  console.log(`Cowork-Switch listening on http://${currentConfig.host}:${currentConfig.port}`);
   console.log(`Config: ${configStore.configPath ?? DEFAULT_CONFIG_PATH}`);
   console.log(`Provider: ${currentProvider.name} (${currentProvider.baseUrl})`);
   console.log(

@@ -1,14 +1,18 @@
 import SwiftUI
 
 @main
-struct ClaudeGatewayTrayApp: App {
+struct CoworkSwitchApp: App {
     @StateObject private var model = MenuBarModel()
 
     var body: some Scene {
         MenuBarExtra {
             MenuBarView(model: model)
         } label: {
-            Label(L10n.tr("app.name"), systemImage: model.statusSymbolName)
+            if let icon = NSImage(named: "AppIcon") {
+                Image(nsImage: icon)
+            } else {
+                Image(systemName: model.statusSymbolName)
+            }
         }
         .menuBarExtraStyle(.window)
 

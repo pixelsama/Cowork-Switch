@@ -40,7 +40,7 @@ let helperAttributes: [NSAttributedString.Key: Any] = [
     .foregroundColor: NSColor(calibratedRed: 0.42, green: 0.49, blue: 0.59, alpha: 1.0),
 ]
 
-NSString(string: "Install Claude Gateway").draw(at: NSPoint(x: 56, y: 322), withAttributes: titleAttributes)
+NSString(string: "Install Cowork-Switch").draw(at: NSPoint(x: 56, y: 322), withAttributes: titleAttributes)
 NSString(string: "Drag the app into Applications to install it.").draw(at: NSPoint(x: 56, y: 286), withAttributes: subtitleAttributes)
 NSString(string: "The app will live in your Applications folder and remain notarized.").draw(at: NSPoint(x: 56, y: 258), withAttributes: helperAttributes)
 
@@ -48,7 +48,7 @@ let badgePath = NSBezierPath(roundedRect: NSRect(x: 56, y: 80, width: 208, heigh
 NSColor(calibratedRed: 0.84, green: 0.91, blue: 0.97, alpha: 0.82).setFill()
 badgePath.fill()
 
-NSString(string: "ClaudeGatewayTray.app").draw(at: NSPoint(x: 76, y: 138), withAttributes: subtitleAttributes)
+NSString(string: "CoworkSwitch.app").draw(at: NSPoint(x: 76, y: 138), withAttributes: subtitleAttributes)
 NSString(string: "Menu bar app").draw(at: NSPoint(x: 76, y: 110), withAttributes: helperAttributes)
 
 let arrow = NSBezierPath()

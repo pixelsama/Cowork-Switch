@@ -3,9 +3,9 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-APP_NAME="ClaudeGatewayTray"
+APP_NAME="CoworkSwitch"
 APP_BUNDLE_NAME="${APP_NAME}.app"
-DMG_VOLUME_NAME="Install Claude Gateway"
+DMG_VOLUME_NAME="Install Cowork-Switch"
 APP_BUILD_DIR="$ROOT_DIR/dist/$APP_BUNDLE_NAME"
 RELEASE_DIR="$ROOT_DIR/release"
 TMP_DIR="$ROOT_DIR/.tmp/package-macos"

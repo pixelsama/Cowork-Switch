@@ -1,4 +1,4 @@
-"app.name" = "Claude 网关";
+"app.name" = "Cowork-Switch";
 "menu.endpoint" = "网关地址";
 "menu.launch_at_login" = "开机自启";
 "menu.active_provider" = "当前服务商";
@@ -8,10 +8,10 @@
 "menu.refreshing" = "刷新中...";
 "menu.settings" = "设置";
 "menu.quit" = "退出";
-"status.running" = "网关运行中";
-"status.unreachable" = "无法连接到网关";
-"settings.window_title" = "Claude 网关设置";
-"settings.title" = "Claude 网关设置";
+"status.running" = "Cowork-Switch 运行中";
+"status.unreachable" = "无法连接到 Cowork-Switch";
+"settings.window_title" = "Cowork-Switch 设置";
+"settings.title" = "Cowork-Switch 设置";
 "settings.subtitle" = "切换兼容 Anthropic 格式的服务商，并决定 /v1/models 是本地伪造还是直接透传上游。";
 "settings.gateway_endpoint" = "网关地址";
 "settings.active_provider" = "当前服务商";
@@ -25,10 +25,10 @@
 "settings.reload" = "重新读取网关配置";
 "settings.save" = "保存";
 "settings.saving" = "保存中...";
-"launch_at_login.toggle" = "登录时自动启动 Claude 网关";
+"launch_at_login.toggle" = "登录时自动启动 Cowork-Switch";
 "launch_at_login.summary_enabled" = "已开启";
 "launch_at_login.summary_disabled" = "已关闭";
-"launch_at_login.help" = "默认开启。你随时都可以关闭。如果 macOS 要求批准，请在“系统设置 > 通用 > 登录项”中允许 Claude Gateway。";
+"launch_at_login.help" = "默认开启。你随时都可以关闭。如果 macOS 要求批准，请在“系统设置 > 通用 > 登录项”中允许 Cowork-Switch。";
 "launch_at_login.status_enabled" = "开机自启已开启。";
 "launch_at_login.status_disabled" = "开机自启已关闭。";
 "launch_at_login.status_requires_approval" = "macOS 需要额外批准。请检查“系统设置 > 通用 > 登录项”。";

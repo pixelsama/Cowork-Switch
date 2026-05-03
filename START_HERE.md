@@ -1,4 +1,4 @@
-# Claude Anthropic Gateway: Start Here
+# Cowork-Switch: Start Here
 
 This folder contains two things:
 
@@ -30,7 +30,7 @@ Stop it with `Ctrl+C`.
 Copy the LaunchAgent template:
 
 ```bash
-cp launchd/com.example.deepseek-anthropic-proxy.plist ~/Library/LaunchAgents/com.example.deepseek-anthropic-proxy.plist
+cp launchd/com.pixelsama.cowork-switch.plist ~/Library/LaunchAgents/com.pixelsama.cowork-switch.plist
 ```
 
 Replace:
@@ -43,10 +43,10 @@ __PROJECT_DIR__ absolute path to this folder
 Load it:
 
 ```bash
-plutil -lint ~/Library/LaunchAgents/com.example.deepseek-anthropic-proxy.plist
-launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.example.deepseek-anthropic-proxy.plist
-launchctl enable gui/$(id -u)/com.example.deepseek-anthropic-proxy
-launchctl kickstart -k gui/$(id -u)/com.example.deepseek-anthropic-proxy
+plutil -lint ~/Library/LaunchAgents/com.pixelsama.cowork-switch.plist
+launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.pixelsama.cowork-switch.plist
+launchctl enable gui/$(id -u)/com.pixelsama.cowork-switch
+launchctl kickstart -k gui/$(id -u)/com.pixelsama.cowork-switch
 ```
 
 ## 3. Build And Open The Menu Bar App
@@ -54,7 +54,7 @@ launchctl kickstart -k gui/$(id -u)/com.example.deepseek-anthropic-proxy
 ```bash
 cd /Users/pixelsama/deepseek-anthropic-proxy
 zsh scripts/build-macos-app.sh
-open dist/ClaudeGatewayTray.app
+open dist/CoworkSwitch.app
 ```
 
 ## 3.5 Package A Signed macOS Release

@@ -3,7 +3,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-APP_NAME="ClaudeGatewayTray"
+APP_NAME="CoworkSwitch"
 APP_SOURCE_DIR="$ROOT_DIR/macos-app/$APP_NAME"
 APP_BUILD_DIR="$ROOT_DIR/dist/$APP_NAME.app"
 APP_BINARY_DIR="$APP_BUILD_DIR/Contents/MacOS"

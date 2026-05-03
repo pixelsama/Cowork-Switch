@@ -4,7 +4,7 @@ import { dirname } from 'node:path';
 
 export const DEFAULT_MODELS = Object.freeze(['deepseek-v4-pro', 'deepseek-v4-flash']);
 export const DEFAULT_UPSTREAM_BASE_URL = 'https://api.deepseek.com/anthropic';
-export const DEFAULT_CONFIG_PATH = `${os.homedir()}/Library/Application Support/ClaudeAnthropicGateway/config.json`;
+export const DEFAULT_CONFIG_PATH = `${os.homedir()}/Library/Application Support/CoworkSwitch/config.json`;
 
 export function parseModelIds(value) {
   if (!value) {

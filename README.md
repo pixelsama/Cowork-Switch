@@ -1,4 +1,4 @@
-# Claude Anthropic Gateway
+# Cowork-Switch
 
 Local Anthropic-compatible gateway for Claude Desktop, now with a macOS menu bar companion app.
 
@@ -16,9 +16,9 @@ Local Anthropic-compatible gateway for Claude Desktop, now with a macOS menu bar
 ## Runtime Pieces
 
 - Node gateway source: [src](/Users/pixelsama/deepseek-anthropic-proxy/src)
-- Menu bar app source: [macos-app/ClaudeGatewayTray](/Users/pixelsama/deepseek-anthropic-proxy/macos-app/ClaudeGatewayTray)
-- Built app bundle: [dist/ClaudeGatewayTray.app](/Users/pixelsama/deepseek-anthropic-proxy/dist/ClaudeGatewayTray.app)
-- Config file: `/Users/pixelsama/Library/Application Support/ClaudeAnthropicGateway/config.json`
+- Menu bar app source: [macos-app/CoworkSwitch](/Users/pixelsama/deepseek-anthropic-proxy/macos-app/CoworkSwitch)
+- Built app bundle: [dist/CoworkSwitch.app](/Users/pixelsama/deepseek-anthropic-proxy/dist/CoworkSwitch.app)
+- Config file: `/Users/pixelsama/Library/Application Support/CoworkSwitch/config.json`
 
 ## Claude Desktop
 
@@ -50,17 +50,17 @@ If `useFakeModels = false`, the gateway forwards `/v1/models` directly to the up
 The gateway is installed as:
 
 ```text
-/Users/pixelsama/Library/LaunchAgents/com.pixelsama.deepseek-anthropic-proxy.plist
+/Users/pixelsama/Library/LaunchAgents/com.pixelsama.cowork-switch.plist
 ```
 
 Useful commands:
 
 ```bash
-launchctl print gui/$(id -u)/com.pixelsama.deepseek-anthropic-proxy
-launchctl kickstart -k gui/$(id -u)/com.pixelsama.deepseek-anthropic-proxy
-launchctl bootout gui/$(id -u) ~/Library/LaunchAgents/com.pixelsama.deepseek-anthropic-proxy.plist
-launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.pixelsama.deepseek-anthropic-proxy.plist
-tail -f /tmp/deepseek-anthropic-proxy.out.log /tmp/deepseek-anthropic-proxy.err.log
+launchctl print gui/$(id -u)/com.pixelsama.cowork-switch
+launchctl kickstart -k gui/$(id -u)/com.pixelsama.cowork-switch
+launchctl bootout gui/$(id -u) ~/Library/LaunchAgents/com.pixelsama.cowork-switch.plist
+launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.pixelsama.cowork-switch.plist
+tail -f /tmp/cowork-switch.out.log /tmp/cowork-switch.err.log
 ```
 
 ## Build The Menu Bar App
@@ -68,7 +68,7 @@ tail -f /tmp/deepseek-anthropic-proxy.out.log /tmp/deepseek-anthropic-proxy.err.
 ```bash
 cd /Users/pixelsama/deepseek-anthropic-proxy
 zsh scripts/build-macos-app.sh
-open dist/ClaudeGatewayTray.app
+open dist/CoworkSwitch.app
 ```
 
 ## Signed macOS Packaging
@@ -112,8 +112,8 @@ npm run verify:macos:package
 Artifacts are written to:
 
 ```text
-release/ClaudeGatewayTray-<version>-arm64-mac.zip
-release/ClaudeGatewayTray-<version>-arm64-mac.dmg
+release/CoworkSwitch-<version>-arm64-mac.zip
+release/CoworkSwitch-<version>-arm64-mac.dmg
 release/checksums-macos.txt
 ```
 

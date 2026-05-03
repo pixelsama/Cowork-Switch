@@ -14,8 +14,8 @@ require_file() {
   }
 }
 
-latest_zip="$(find "$RELEASE_DIR" -maxdepth 1 -name 'ClaudeGatewayTray-*-arm64-mac.zip' | sort | tail -n 1)"
-latest_dmg="$(find "$RELEASE_DIR" -maxdepth 1 -name 'ClaudeGatewayTray-*-arm64-mac.dmg' | sort | tail -n 1)"
+latest_zip="$(find "$RELEASE_DIR" -maxdepth 1 -name 'CoworkSwitch-*-arm64-mac.zip' | sort | tail -n 1)"
+latest_dmg="$(find "$RELEASE_DIR" -maxdepth 1 -name 'CoworkSwitch-*-arm64-mac.dmg' | sort | tail -n 1)"
 
 require_file "$latest_zip"
 require_file "$latest_dmg"
@@ -41,12 +41,12 @@ rm -rf "$TMP_DIR"
 mkdir -p "$TMP_DIR/zip" "$TMP_DIR/dmg"
 
 ditto -x -k "$latest_zip" "$TMP_DIR/zip"
-codesign -dvv "$TMP_DIR/zip/ClaudeGatewayTray.app"
-check_spctl_status "$TMP_DIR/zip/ClaudeGatewayTray.app"
+codesign -dvv "$TMP_DIR/zip/CoworkSwitch.app"
+check_spctl_status "$TMP_DIR/zip/CoworkSwitch.app"
 
 hdiutil attach "$latest_dmg" -mountpoint "$TMP_DIR/dmg/mount" -nobrowse >/dev/null
-codesign -dvv "$TMP_DIR/dmg/mount/ClaudeGatewayTray.app"
-check_spctl_status "$TMP_DIR/dmg/mount/ClaudeGatewayTray.app"
+codesign -dvv "$TMP_DIR/dmg/mount/CoworkSwitch.app"
+check_spctl_status "$TMP_DIR/dmg/mount/CoworkSwitch.app"
 hdiutil detach "$TMP_DIR/dmg/mount" >/dev/null
 
 printf '[verify-macos] Verified:\n'

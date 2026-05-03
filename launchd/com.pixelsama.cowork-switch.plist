@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
   <key>Label</key>
-  <string>com.example.deepseek-anthropic-proxy</string>
+  <string>com.pixelsama.cowork-switch</string>
 
   <key>ProgramArguments</key>
   <array>
@@ -35,9 +35,9 @@
   <true/>
 
   <key>StandardOutPath</key>
-  <string>/tmp/deepseek-anthropic-proxy.out.log</string>
+  <string>/tmp/cowork-switch.out.log</string>
 
   <key>StandardErrorPath</key>
-  <string>/tmp/deepseek-anthropic-proxy.err.log</string>
+  <string>/tmp/cowork-switch.err.log</string>
 </dict>
 </plist>

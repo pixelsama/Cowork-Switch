@@ -1,9 +1,9 @@
 {
-  "name": "deepseek-anthropic-proxy",
+  "name": "cowork-switch",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Local Anthropic-compatible proxy for Claude Desktop to use DeepSeek.",
+  "description": "Local Anthropic-compatible proxy for Claude Desktop to switch between AI providers.",
   "scripts": {
     "start": "node src/server.js",
     "test": "node --test",
@@ -16,10 +16,10 @@
     "node": ">=18"
   },
   "keywords": [
-    "deepseek",
     "anthropic",
     "claude-desktop",
-    "proxy"
+    "proxy",
+    "provider-switch"
   ],
   "license": "MIT"
 }

@@ -158,7 +158,7 @@ function createStatusPayload(config, configStore) {
 
   return {
     ok: true,
-    service: 'claude-anthropic-gateway',
+    service: 'cowork-switch',
     configPath: configStore.configPath ?? null,
     activeProvider: createPublicProviderView(activeProvider),
     host: config.host,

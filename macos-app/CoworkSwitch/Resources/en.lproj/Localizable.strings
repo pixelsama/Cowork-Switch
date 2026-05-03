@@ -1,4 +1,4 @@
-"app.name" = "Claude Gateway";
+"app.name" = "Cowork-Switch";
 "menu.endpoint" = "Endpoint";
 "menu.launch_at_login" = "Launch At Login";
 "menu.active_provider" = "Active Provider";
@@ -8,10 +8,10 @@
 "menu.refreshing" = "Refreshing...";
 "menu.settings" = "Settings";
 "menu.quit" = "Quit";
-"status.running" = "Gateway is running";
-"status.unreachable" = "Gateway is unreachable";
-"settings.window_title" = "Claude Gateway Settings";
-"settings.title" = "Claude Gateway Settings";
+"status.running" = "Cowork-Switch is running";
+"status.unreachable" = "Cowork-Switch is unreachable";
+"settings.window_title" = "Cowork-Switch Settings";
+"settings.title" = "Cowork-Switch Settings";
 "settings.subtitle" = "Switch Anthropic-compatible providers and decide whether /v1/models should be faked or proxied upstream.";
 "settings.gateway_endpoint" = "Gateway endpoint";
 "settings.active_provider" = "Active provider";
@@ -25,10 +25,10 @@
 "settings.reload" = "Reload From Gateway";
 "settings.save" = "Save";
 "settings.saving" = "Saving...";
-"launch_at_login.toggle" = "Launch Claude Gateway at login";
+"launch_at_login.toggle" = "Launch Cowork-Switch at login";
 "launch_at_login.summary_enabled" = "Enabled";
 "launch_at_login.summary_disabled" = "Disabled";
-"launch_at_login.help" = "Enabled by default. You can turn this off at any time. If macOS asks for approval, allow Claude Gateway in Login Items.";
+"launch_at_login.help" = "Enabled by default. You can turn this off at any time. If macOS asks for approval, allow Cowork-Switch in Login Items.";
 "launch_at_login.status_enabled" = "Launch at login is enabled.";
 "launch_at_login.status_disabled" = "Launch at login is disabled.";
 "launch_at_login.status_requires_approval" = "macOS requires approval. Check System Settings > General > Login Items.";

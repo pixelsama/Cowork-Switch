@@ -136,7 +136,7 @@ test('getActiveProvider falls back to the first provider when the active id is m
 });
 
 test('file-backed config store persists normalized updates and tolerates invalid JSON', () => {
-  const tempDir = mkdtempSync(join(os.tmpdir(), 'claude-gateway-test-'));
+  const tempDir = mkdtempSync(join(os.tmpdir(), 'cowork-switch-test-'));
   const configPath = join(tempDir, 'config.json');
 
   try {

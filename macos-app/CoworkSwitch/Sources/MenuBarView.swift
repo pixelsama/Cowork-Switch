@@ -82,21 +82,22 @@ struct MenuBarView: View {
 
     private func showSettingsWindow() {
         openWindow(id: "settings")
-        focusSettingsWindow()
+        bringSettingsWindowToFront()
     }
 
-    private func focusSettingsWindow(attempt: Int = 0) {
+    private func bringSettingsWindowToFront(attempt: Int = 0) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-            NSApp.activate(ignoringOtherApps: true)
+            NSApp.activate(ignoringOtherApps: false)
 
-            if let window = NSApp.windows.first(where: { $0.title == L10n.tr("settings.window_title") }) {
+            if let window = NSApp.windows.first(where: {
+                $0.title == L10n.tr("settings.window_title")
+            }) {
                 window.makeKeyAndOrderFront(nil)
-                window.orderFrontRegardless()
                 return
             }
 
             if attempt < 3 {
-                focusSettingsWindow(attempt: attempt + 1)
+                bringSettingsWindowToFront(attempt: attempt + 1)
             }
         }
     }

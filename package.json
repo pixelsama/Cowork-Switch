@@ -1,6 +1,6 @@
 {
   "name": "cowork-switch",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "type": "module",
   "description": "Local Anthropic-compatible proxy for Claude Desktop to switch between AI providers.",

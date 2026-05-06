@@ -16,6 +16,9 @@
 "settings.gateway_endpoint" = "网关地址";
 "settings.active_provider" = "当前服务商";
 "settings.add_provider" = "新增服务商";
+"settings.add_provider_deepseek" = "新增 DeepSeek 预设";
+"settings.add_provider_openrouter" = "新增 OpenRouter 预设";
+"settings.add_provider_custom" = "新增自定义服务商";
 "settings.remove_provider" = "删除";
 "settings.provider_name" = "服务商名称";
 "settings.base_url" = "Anthropic Base URL";

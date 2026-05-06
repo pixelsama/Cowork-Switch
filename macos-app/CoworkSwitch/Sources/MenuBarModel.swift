@@ -110,17 +110,50 @@ final class MenuBarModel: ObservableObject {
     }
 
     func addProvider() {
-        let nextIndex = draftConfig.providers.count + 1
-        let provider = GatewayProvider(
-            id: "provider-\(nextIndex)",
-            name: L10n.format("provider.custom_name", nextIndex),
-            baseUrl: L10n.tr("provider.custom_base_url"),
-            apiKey: "",
-            useFakeModels: false,
-            fakeModels: []
+        addCustomProvider()
+    }
+
+    func addDeepSeekProvider() {
+        appendProvider(
+            GatewayProvider(
+                id: nextProviderId(prefix: "deepseek"),
+                name: "DeepSeek",
+                providerKind: "deepseek",
+                baseUrl: "https://api.deepseek.com/anthropic",
+                apiKey: "",
+                useFakeModels: true,
+                fakeModels: ["deepseek-v4-pro", "deepseek-v4-flash"]
+            )
         )
-        draftConfig.providers.append(provider)
-        draftConfig.activeProviderId = provider.id
+    }
+
+    func addOpenRouterProvider() {
+        appendProvider(
+            GatewayProvider(
+                id: nextProviderId(prefix: "openrouter"),
+                name: "OpenRouter",
+                providerKind: "openrouter",
+                baseUrl: "https://openrouter.ai/api",
+                apiKey: "",
+                useFakeModels: false,
+                fakeModels: []
+            )
+        )
+    }
+
+    func addCustomProvider() {
+        let nextIndex = draftConfig.providers.count + 1
+        appendProvider(
+            GatewayProvider(
+                id: nextProviderId(),
+                name: L10n.format("provider.custom_name", nextIndex),
+                providerKind: "generic",
+                baseUrl: L10n.tr("provider.custom_base_url"),
+                apiKey: "",
+                useFakeModels: false,
+                fakeModels: []
+            )
+        )
     }
 
     func removeSelectedProvider() {
@@ -170,6 +203,21 @@ final class MenuBarModel: ObservableObject {
         var provider = draftConfig.providers[index]
         mutate(&provider)
         draftConfig.providers[index] = provider
+    }
+
+    private func appendProvider(_ provider: GatewayProvider) {
+        draftConfig.providers.append(provider)
+        draftConfig.activeProviderId = provider.id
+    }
+
+    private func nextProviderId(prefix: String = "provider") -> String {
+        var candidateIndex = draftConfig.providers.count + 1
+
+        while draftConfig.providers.contains(where: { $0.id == "\(prefix)-\(candidateIndex)" }) {
+            candidateIndex += 1
+        }
+
+        return "\(prefix)-\(candidateIndex)"
     }
 
     private var loadedConfig: GatewayConfig? {

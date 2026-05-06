@@ -3,6 +3,7 @@ import Foundation
 struct GatewayProvider: Codable, Equatable, Identifiable {
     var id: String
     var name: String
+    var providerKind: String
     var baseUrl: String
     var apiKey: String
     var useFakeModels: Bool
@@ -23,6 +24,7 @@ struct GatewayConfig: Codable, Equatable {
             GatewayProvider(
                 id: "deepseek",
                 name: "DeepSeek",
+                providerKind: "deepseek",
                 baseUrl: "https://api.deepseek.com/anthropic",
                 apiKey: "",
                 useFakeModels: true,

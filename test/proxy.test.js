@@ -40,6 +40,7 @@ function createConfigStore(config = {}) {
       {
         id: 'deepseek',
         name: 'DeepSeek',
+        providerKind: 'deepseek',
         baseUrl: 'https://api.deepseek.com/anthropic',
         apiKey: '',
         useFakeModels: true,
@@ -80,6 +81,7 @@ test('normalizeGatewayConfig preserves an explicitly empty fake model list', () 
       {
         id: 'custom',
         name: 'Custom',
+        providerKind: 'generic',
         baseUrl: 'https://gateway.example/anthropic',
         apiKey: '',
         useFakeModels: true,
@@ -99,9 +101,32 @@ test('normalizeGatewayConfig accepts legacy single-provider options', () => {
   });
 
   assert.equal(config.providers[0].id, 'legacy');
+  assert.equal(config.providers[0].providerKind, 'generic');
   assert.equal(config.providers[0].baseUrl, 'https://gateway.example/anthropic');
   assert.equal(config.providers[0].apiKey, 'legacy-key');
   assert.deepEqual(config.providers[0].fakeModels, ['custom-model']);
+});
+
+test('normalizeGatewayConfig expands the OpenRouter preset', () => {
+  const config = normalizeGatewayConfig({
+    activeProviderId: 'openrouter',
+    providers: [
+      {
+        id: 'openrouter',
+        providerKind: 'openrouter',
+      },
+    ],
+  });
+
+  assert.deepEqual(config.providers[0], {
+    id: 'openrouter',
+    name: 'OpenRouter',
+    providerKind: 'openrouter',
+    baseUrl: 'https://openrouter.ai/api',
+    apiKey: '',
+    useFakeModels: false,
+    fakeModels: [],
+  });
 });
 
 test('createDefaultGatewayConfig uses environment defaults', () => {
@@ -125,6 +150,7 @@ test('getActiveProvider falls back to the first provider when the active id is m
       {
         id: 'first',
         name: 'First',
+        providerKind: 'generic',
         baseUrl: 'https://first.example/anthropic',
         apiKey: '',
         useFakeModels: false,
@@ -162,6 +188,7 @@ test('file-backed config store persists normalized updates and tolerates invalid
         {
           id: 'Custom Provider',
           name: 'Custom Provider',
+          providerKind: 'generic',
           baseUrl: 'https://gateway.example/anthropic/',
           apiKey: '',
           useFakeModels: false,
@@ -226,6 +253,7 @@ test('GET /v1/models returns an empty fake list without forwarding upstream', as
           {
             id: 'empty-fake',
             name: 'Empty Fake Models',
+            providerKind: 'generic',
             baseUrl: 'https://gateway.example/anthropic',
             apiKey: '',
             useFakeModels: true,
@@ -263,6 +291,7 @@ test('GET /v1/models/:id returns 404 for empty fake models without forwarding up
           {
             id: 'empty-fake',
             name: 'Empty Fake Models',
+            providerKind: 'generic',
             baseUrl: 'https://gateway.example/anthropic',
             apiKey: '',
             useFakeModels: true,
@@ -300,6 +329,7 @@ test('GET /v1/models forwards upstream when fake models are disabled', async () 
           {
             id: 'anthropic',
             name: 'Anthropic',
+            providerKind: 'generic',
             baseUrl: 'https://api.anthropic.example',
             apiKey: 'stored-key',
             useFakeModels: false,
@@ -341,6 +371,7 @@ test('GET /v1/models/:id forwards upstream when fake models are disabled', async
           {
             id: 'anthropic',
             name: 'Anthropic',
+            providerKind: 'generic',
             baseUrl: 'https://api.anthropic.example',
             apiKey: '',
             useFakeModels: false,
@@ -515,6 +546,7 @@ test('admin config endpoint updates the active provider configuration', async ()
           {
             id: 'custom',
             name: 'Custom Anthropic Gateway',
+            providerKind: 'generic',
             baseUrl: 'https://gateway.example/anthropic',
             apiKey: 'new-key',
             useFakeModels: false,

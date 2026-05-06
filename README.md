@@ -6,6 +6,7 @@ Local Anthropic-compatible gateway for Claude Desktop, now with a macOS menu bar
 
 - Proxies `POST /v1/messages` and related sub-routes to any Anthropic-compatible upstream provider.
 - Supports multiple providers and lets you switch the active one.
+- Includes built-in presets for DeepSeek and OpenRouter.
 - Can fake `GET /v1/models` and `GET /v1/models/:id` when an upstream does not implement them.
 - Can also pass `/v1/models` straight through to the upstream when fake models are disabled.
 - Exposes local admin endpoints for the menu bar app:
@@ -36,6 +37,7 @@ Gateway auth scheme: bearer
 For each provider you can configure:
 
 - `name`
+- `providerKind` (`deepseek`, `openrouter`, or `generic`)
 - `baseUrl`
 - `apiKey`
 - `useFakeModels`
@@ -44,6 +46,16 @@ For each provider you can configure:
 If `useFakeModels = true`, the gateway returns your local fake `/v1/models` list, even when the list is empty.
 
 If `useFakeModels = false`, the gateway forwards `/v1/models` directly to the upstream provider.
+
+## OpenRouter Preset
+
+Cowork-Switch now includes an `OpenRouter` preset for Claude Code or Claude Desktop setups that want Anthropic-compatible routing through OpenRouter.
+
+- Preset base URL: `https://openrouter.ai/api`
+- Default `/v1/models` behavior: direct upstream passthrough
+- Authentication: store your OpenRouter API key on the provider, or let the client send it as a bearer token
+
+In the macOS app, use `Settings > Add Provider > Add OpenRouter Preset`, then make it the active provider.
 
 ## Background Service
 

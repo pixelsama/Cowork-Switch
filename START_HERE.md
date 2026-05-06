@@ -84,6 +84,7 @@ The menu bar app lets you:
 
 - see whether the gateway is running
 - switch the active Anthropic-compatible provider
+- add preset providers for DeepSeek and OpenRouter
 - choose whether `/v1/models` should be faked or passed through
 - edit fake model IDs for providers like DeepSeek
 
@@ -100,3 +101,15 @@ Gateway auth scheme: bearer
 
 - If the upstream provider does not implement `/v1/models`, enable fake models and fill in model IDs.
 - If the upstream provider already supports `/v1/models`, disable fake models and let the gateway pass the request upstream untouched.
+
+## OpenRouter Quick Setup
+
+If you want Claude Code or Claude Desktop to route through OpenRouter:
+
+1. Open Cowork-Switch settings.
+2. Choose `Add Provider > Add OpenRouter Preset`.
+3. Paste your OpenRouter API key into that provider.
+4. Keep `useFakeModels` disabled so `/v1/models` is forwarded to OpenRouter.
+5. Make the OpenRouter preset the active provider.
+
+The preset uses `https://openrouter.ai/api`, which matches OpenRouter's Anthropic-compatible integration guide.

@@ -62,8 +62,18 @@ struct SettingsView: View {
                 }
                 .frame(maxWidth: 280)
 
-                Button(L10n.tr("settings.add_provider")) {
-                    model.addProvider()
+                Menu(L10n.tr("settings.add_provider")) {
+                    Button(L10n.tr("settings.add_provider_deepseek")) {
+                        model.addDeepSeekProvider()
+                    }
+
+                    Button(L10n.tr("settings.add_provider_openrouter")) {
+                        model.addOpenRouterProvider()
+                    }
+
+                    Button(L10n.tr("settings.add_provider_custom")) {
+                        model.addCustomProvider()
+                    }
                 }
 
                 Button(L10n.tr("settings.remove_provider")) {

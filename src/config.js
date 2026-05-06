@@ -1,10 +1,11 @@
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { closeSync, fsyncSync, mkdirSync, openSync, readFileSync, writeSync } from 'node:fs';
 import os from 'node:os';
 import { dirname } from 'node:path';
 
 export const DEFAULT_MODELS = Object.freeze(['deepseek-v4-pro', 'deepseek-v4-flash']);
 export const DEFAULT_UPSTREAM_BASE_URL = 'https://api.deepseek.com/anthropic';
 export const DEFAULT_CONFIG_PATH = `${os.homedir()}/Library/Application Support/CoworkSwitch/config.json`;
+export const DEFAULT_OPENROUTER_BASE_URL = 'https://openrouter.ai/api';
 
 export function parseModelIds(value) {
   if (!value) {
@@ -22,6 +23,16 @@ function normalizeBaseUrl(value, fallback) {
   return candidate.endsWith('/') ? candidate.slice(0, -1) : candidate;
 }
 
+function normalizeProviderKind(value) {
+  const candidate = typeof value === 'string' ? value.trim().toLowerCase() : '';
+
+  if (candidate === 'deepseek' || candidate === 'openrouter') {
+    return candidate;
+  }
+
+  return 'generic';
+}
+
 function normalizeProviderId(value, index) {
   const candidate = typeof value === 'string' && value.trim() ? value.trim() : `provider-${index + 1}`;
   return candidate
@@ -34,6 +45,7 @@ function createLegacyProvider(env) {
   return {
     id: 'deepseek',
     name: 'DeepSeek',
+    providerKind: 'deepseek',
     baseUrl: normalizeBaseUrl(env.DEEPSEEK_ANTHROPIC_BASE_URL, DEFAULT_UPSTREAM_BASE_URL),
     apiKey: env.DEEPSEEK_API_KEY ?? env.ANTHROPIC_AUTH_TOKEN ?? '',
     useFakeModels: true,
@@ -41,9 +53,23 @@ function createLegacyProvider(env) {
   };
 }
 
+function createOpenRouterProvider() {
+  return {
+    id: 'openrouter',
+    name: 'OpenRouter',
+    providerKind: 'openrouter',
+    baseUrl: DEFAULT_OPENROUTER_BASE_URL,
+    apiKey: '',
+    useFakeModels: false,
+    fakeModels: [],
+  };
+}
+
 function normalizeProvider(provider, index, env) {
   const legacyProvider = createLegacyProvider(env);
   const baseProvider = provider && typeof provider === 'object' ? provider : {};
+  const providerKind = normalizeProviderKind(baseProvider.providerKind);
+  const presetProvider = providerKind === 'deepseek' ? legacyProvider : providerKind === 'openrouter' ? createOpenRouterProvider() : null;
   const hasExplicitFakeModels = Object.prototype.hasOwnProperty.call(baseProvider, 'fakeModels');
   const fakeModels = Array.isArray(baseProvider.fakeModels)
     ? baseProvider.fakeModels.map((model) => String(model).trim()).filter(Boolean)
@@ -52,18 +78,21 @@ function normalizeProvider(provider, index, env) {
           .split(',')
           .map((model) => model.trim())
           .filter(Boolean)
-      : [...legacyProvider.fakeModels];
+      : [...(presetProvider?.fakeModels ?? legacyProvider.fakeModels)];
+
+  const fallbackProvider = presetProvider ?? legacyProvider;
 
   return {
     id: normalizeProviderId(baseProvider.id, index),
+    providerKind,
     name:
       typeof baseProvider.name === 'string' && baseProvider.name.trim()
         ? baseProvider.name.trim()
-        : legacyProvider.name,
-    baseUrl: normalizeBaseUrl(baseProvider.baseUrl, legacyProvider.baseUrl),
+        : fallbackProvider.name,
+    baseUrl: normalizeBaseUrl(baseProvider.baseUrl, fallbackProvider.baseUrl),
     apiKey: typeof baseProvider.apiKey === 'string' ? baseProvider.apiKey : '',
     useFakeModels:
-      typeof baseProvider.useFakeModels === 'boolean' ? baseProvider.useFakeModels : legacyProvider.useFakeModels,
+      typeof baseProvider.useFakeModels === 'boolean' ? baseProvider.useFakeModels : fallbackProvider.useFakeModels,
     fakeModels,
   };
 }

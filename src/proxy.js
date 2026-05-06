@@ -160,6 +160,7 @@ function createPublicProviderView(provider) {
   return {
     id: provider.id,
     name: provider.name,
+    providerKind: provider.providerKind ?? 'generic',
     baseUrl: provider.baseUrl,
     apiKey: createRedactedApiKey(provider.apiKey),
     apiKeyConfigured: Boolean(provider.apiKey),
@@ -221,6 +222,7 @@ function createDefaultConfigStoreFromLegacyOptions(options) {
         {
           id: 'legacy',
           name: 'Legacy Provider',
+          providerKind: 'generic',
           baseUrl: options.upstreamBaseUrl,
           apiKey: options.apiKey ?? '',
           useFakeModels: true,

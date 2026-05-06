@@ -16,6 +16,9 @@
 "settings.gateway_endpoint" = "Gateway endpoint";
 "settings.active_provider" = "Active provider";
 "settings.add_provider" = "Add Provider";
+"settings.add_provider_deepseek" = "Add DeepSeek Preset";
+"settings.add_provider_openrouter" = "Add OpenRouter Preset";
+"settings.add_provider_custom" = "Add Custom Provider";
 "settings.remove_provider" = "Remove";
 "settings.provider_name" = "Provider Name";
 "settings.base_url" = "Anthropic Base URL";

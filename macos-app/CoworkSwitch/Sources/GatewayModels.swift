@@ -8,6 +8,45 @@ struct GatewayProvider: Codable, Equatable, Identifiable {
     var apiKey: String
     var useFakeModels: Bool
     var fakeModels: [String]
+
+    private enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case providerKind
+        case baseUrl
+        case apiKey
+        case useFakeModels
+        case fakeModels
+    }
+
+    init(
+        id: String,
+        name: String,
+        providerKind: String,
+        baseUrl: String,
+        apiKey: String,
+        useFakeModels: Bool,
+        fakeModels: [String]
+    ) {
+        self.id = id
+        self.name = name
+        self.providerKind = providerKind
+        self.baseUrl = baseUrl
+        self.apiKey = apiKey
+        self.useFakeModels = useFakeModels
+        self.fakeModels = fakeModels
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(String.self, forKey: .id)
+        name = try container.decode(String.self, forKey: .name)
+        providerKind = try container.decodeIfPresent(String.self, forKey: .providerKind) ?? "generic"
+        baseUrl = try container.decode(String.self, forKey: .baseUrl)
+        apiKey = try container.decodeIfPresent(String.self, forKey: .apiKey) ?? ""
+        useFakeModels = try container.decodeIfPresent(Bool.self, forKey: .useFakeModels) ?? false
+        fakeModels = try container.decodeIfPresent([String].self, forKey: .fakeModels) ?? []
+    }
 }
 
 struct GatewayConfig: Codable, Equatable {
